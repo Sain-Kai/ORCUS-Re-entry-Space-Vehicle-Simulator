@@ -1,0 +1,22 @@
+# example_glider.yaml
+name: example_glider
+vehicle:
+  mass: 2000.0
+  Aref: 4.0
+  Rn: 0.2
+  Cl: 0.8
+entry:
+  v0: 7600.0
+  gamma_deg: -3.0
+  h0: 110000.0
+control:
+  auto_bank: true
+  q_target: 1.5e6
+  max_bank: 70
+  bank_rate: 20
+physics:
+  heat_model: fay
+  Re_lam: 1e6
+  Re_crit: 5e6
+output:
+  out_csv: ../../data/glider_run.csv

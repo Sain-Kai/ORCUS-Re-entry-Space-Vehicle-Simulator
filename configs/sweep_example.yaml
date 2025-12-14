@@ -1,0 +1,8 @@
+# sweep_example.yaml - example for batch_run.py
+sweep:
+  - param: Cl
+    values: [0.0, 0.2, 0.4]
+  - param: Rn
+    values: [0.3, 0.5, 0.8]
+base_config: example_capsule.yaml
+runs_dir: ../../data/batch_runs/
