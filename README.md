@@ -1,258 +1,540 @@
-🛰️ ORCUS — Hypersonic Re-Entry Vehicle Simulator
-Summary
+\# ORCUS — Hypersonic Re-Entry Vehicle Simulation Framework
 
-ORCUS is a modular, physics-driven hypersonic atmospheric re-entry vehicle simulator focused on aerothermodynamic fidelity, TPS survivability, and certification-style robustness analysis.
 
-Unlike visualization-centric tools, ORCUS is designed as a failure-aware engineering simulator, where why and how a vehicle fails is as important as whether it survives.
 
-Core Objective (Non-Negotiable)
+ORCUS is a \*\*modular, physics-driven hypersonic atmospheric re-entry vehicle simulator\*\* focused on \*\*aerothermodynamic fidelity\*\*, \*\*Thermal Protection System (TPS) survivability\*\*, and \*\*certification-style robustness analysis\*\*.
 
-Maximize physical realism for hypersonic re-entry within a transparent, extensible research codebase.
 
-Every phase added so far exists to:
 
-Reduce hidden assumptions
+Unlike visualization-centric trajectory tools, ORCUS is designed as a \*\*failure-aware engineering simulator\*\*, where \*why\* and \*how\* a vehicle fails is treated with the same importance as \*whether\* it survives.
 
-Expose physical sensitivities
 
-Prevent “false survivability”
 
-Prepare the model for CFD / wind-tunnel anchoring
+The codebase prioritizes \*\*transparent physics\*\*, \*\*explicit assumptions\*\*, and \*\*incremental validation readiness\*\* for CFD and wind-tunnel comparison.
 
-What ORCUS Can Do Today (v0.4-A)
-1. Flight Dynamics
 
-3-DOF point-mass re-entry equations
 
-Gravity-turn trajectory propagation
+---
 
-Bank-angle controlled lift modulation
 
-Numerically stable RK4 integrator
 
-Explicit vehicle state evolution (position, velocity, attitude rates)
+\## Core Objective (Non-Negotiable)
 
-2. Atmosphere & Gas Properties
 
-Layered atmosphere model
 
-Tropospheric lapse rate
+> \*\*Maximize physical realism for hypersonic re-entry within a transparent, extensible, research-grade codebase.\*\*
 
-Exponential upper-atmosphere decay
 
-Altitude-varying:
 
-Density
+Every phase implemented in ORCUS exists to:
 
-Temperature
 
-Speed of sound
 
-Gravity
+\- Reduce hidden assumptions  
 
-Mach number computed from local thermodynamics (not constants)
+\- Expose physical sensitivities  
 
-3. Aerothermal Heating (Phase-3 → Phase-4A)
+\- Prevent \*false survivability\* conclusions  
 
-Enthalpy-limited stagnation heating
+\- Prepare the solver for \*\*CFD / wind-tunnel anchoring\*\*
 
-Fay–Riddell–style formulation
 
-Based on total stagnation enthalpy (not velocity³ alone)
 
-Radiative heating
+---
 
-Activated in hypersonic regime (Mach > 10)
 
-Density- and shock-temperature-dependent
 
-Surface re-radiation
+\## Design Philosophy
 
-Stefan–Boltzmann emission
 
-Net heat balance explicitly closed:
 
-q_net = q_conv + q_rad − q_emit
+\- Physics before performance  
 
+\- Explicit failure modes  
 
-⚠️ This eliminated earlier non-physical heat spikes and infinite flux artifacts.
+\- Additive development only (no silent refactors)  
 
-4. Thermal Protection System (TPS) Physics
+\- Certification traceability over convenience  
 
-Material-resolved TPS model:
+\- Reduced-order CFD surrogate, not a black-box predictor  
 
-Density
 
-Specific heat
 
-Conductivity
+ORCUS intentionally avoids monolithic solvers and instead builds fidelity \*\*layer-by-layer\*\*, mirroring real aerospace analysis workflows.
 
-Emissivity
 
-Ablation energy
 
-Maximum allowable temperature
+---
 
-Coupled surface + bulk temperature evolution
 
-Explicit ablation mass loss
 
-Conductive heat transport through TPS thickness
+\## What ORCUS Can Do Today (v0.4-C)
 
-Physically meaningful failure modes:
 
-TPS_EXHAUSTED
 
-OVER_TEMPERATURE
+\### 1. Flight Dynamics
 
-No artificial “survival flags” — failure emerges naturally.
 
-5. Phase-3 Certification Stack (Completed)
 
-Each phase exists for engineering validation, not decoration.
+\- 3-DOF point-mass re-entry equations  
 
-Phase-3K — Thermal Margin Quantification
+\- Gravity-turn trajectory propagation  
 
-Baseline trajectory evaluation
+\- Bank-angle–controlled lift modulation  
 
-Peak heat flux
+\- Numerically stable \*\*RK4\*\* time integration  
 
-Peak temperature ratio
+\- Explicit vehicle state evolution:
 
-Remaining TPS margin
+&nbsp; - Position
 
-Phase-3N — Worst-Case Envelope
+&nbsp; - Velocity
 
-Sweeps over:
+&nbsp; - Attitude rates
 
-Entry flight-path angle
 
-Bank angle
 
-Nose radius
+---
 
-Identifies true worst-case re-entry
 
-Detects hidden non-survivable corners
 
-Phase-3P — Uncertainty Robustness
+\### 2. Atmosphere \& Gas Properties
 
-Conservative stacking of:
 
-Atmospheric density uncertainty
 
-Aerodynamic uncertainty
+\- Altitude-dependent temperature model  
 
-Heating model uncertainty
+\- Density stratification with exponential upper atmosphere  
 
-Survival assessed under compounded worst-case assumptions
+\- Variable speed of sound  
 
-Phase-3Q — Minimum TPS Closure
+\- Consistent thermodynamic closure for Mach computation  
 
-Iterative TPS thickness testing
 
-Answers:
 
-“What is the minimum TPS that survives all certified phases?”
+---
 
-Phase-3W — Monte-Carlo Certification
 
-Hundreds to thousands of randomized runs
 
-Tracks:
+\### 3. Aerodynamics
 
-Survival rate
 
-Failure statistics
 
-Worst-case outcomes
+\- Mach-dependent lift and drag modeling  
 
-Produces a certification matrix, not a single trajectory lie
+\- Static stability derivatives  
 
-6. Failure-First Design Philosophy
+\- Bank-angle coupling into trajectory evolution  
 
-ORCUS does not tune parameters to “make it survive”.
+\- Hypersonic-appropriate coefficient scaling  
 
-If the model fails:
 
-The physics is interrogated
 
-The assumption is exposed
+---
 
-The fix is justified
 
-This is intentional and correct for hypersonic research.
 
-Scientific Assumptions (Explicit & Traceable)
+\### 4. Aerothermal Heating (Phase-3)
 
-ORCUS currently assumes:
 
-Continuum flow regime
 
-Frozen chemistry (no dissociation / ionization yet)
+\- Fay–Riddell–based stagnation convective heating  
 
-Stagnation-point heating dominance
+\- Enthalpy-limited heat flux formulation  
 
-Axisymmetric blunt body
+\- Hypersonic radiative heating activation  
 
-No aero-thermal shape change
+\- Surface re-radiation via Stefan–Boltzmann law  
 
-Open-loop guidance (no feedback control)
+\- Net heat flux coupling into TPS response  
 
-Each assumption is isolated in code, making removal or upgrade feasible.
 
-Architecture Overview
+
+---
+
+
+
+\### 5. Thermal Protection System (TPS)
+
+
+
+\- Transient surface and bulk temperature evolution  
+
+\- Thickness depletion via ablation  
+
+\- Explicit TPS failure modes:
+
+&nbsp; - Thermal exceedance  
+
+&nbsp; - Material exhaustion  
+
+\- Remaining TPS margin tracking  
+
+
+
+---
+
+
+
+\### 6. Guidance \& Survivability Logic
+
+
+
+\- Heat-flux-aware skip guidance  
+
+\- Trajectory modulation to enforce thermal constraints  
+
+\- Failure-aware state termination  
+
+
+
+---
+
+
+
+\### 7. Robustness \& Certification Analysis
+
+
+
+\- Worst-case envelope search (Phase-3N)  
+
+\- Uncertainty robustness analysis (Phase-3P)  
+
+\- Minimum TPS thickness closure (Phase-3Q)  
+
+\- Monte-Carlo certification runs (Phase-3W)  
+
+
+
+These phases explicitly answer:
+
+
+
+\- Where does the vehicle fail?  
+
+\- How sensitive is survival to uncertainty?  
+
+\- Which margins are illusory?  
+
+
+
+---
+
+
+
+\## Phase-4C — CFD-Comparable Aerothermodynamics
+
+
+
+Phase-4C introduces \*\*post-processing physics layers\*\* to bridge ORCUS with high-fidelity CFD solvers.
+
+
+
+\### Phase-4C-1 — Shock Stand-Off \& Stagnation Field
+
+
+
+\- Normal shock relations along stagnation streamline  
+
+\- Shock stand-off distance estimation  
+
+\- Stagnation pressure, temperature, and density extraction  
+
+
+
+\*\*Purpose:\*\* Establish CFD-comparable boundary conditions at the vehicle nose.
+
+
+
+---
+
+
+
+\### Phase-4C-2 — Boundary-Layer Integral Solver
+
+
+
+\- Reynolds-number–based laminar → transitional logic  
+
+\- Momentum thickness (θ)  
+
+\- Energy thickness (δₑ)  
+
+\- Skin-friction coefficient (Cᶠ)  
+
+\- Wall shear stress (τw)  
+
+
+
+\*\*Purpose:\*\* Replace empirical heating correlations with flow-resolved surface physics.
+
+
+
+---
+
+
+
+\### Phase-4C-3 — Wall Heat Flux from Boundary-Layer Theory
+
+
+
+\- Stanton number via Reynolds analogy  
+
+\- Laminar and transitional correction logic  
+
+\- Convective wall heat flux evaluation  
+
+
+
+\*\*Purpose:\*\* Derive heat flux from boundary-layer physics rather than stagnation-only models.
+
+
+
+---
+
+
+
+\### Phase-4C-4 — Parabolized Navier–Stokes Energy Equation
+
+
+
+\- Wall-normal temperature gradient estimation  
+
+\- Fourier-law diffusive heat flux  
+
+\- Explicit separation of convective and diffusive heating  
+
+
+
+\*\*Purpose:\*\* Introduce Navier–Stokes energy transport effects without full CFD cost.
+
+
+
+---
+
+
+
+\## Example Results
+
+
+
+\### Stagnation Flow Field
+
+
+
+Shock stand-off distance : 0.03199 m
+
+Stagnation pressure : 320564 Pa
+
+Stagnation temperature : 30495 K
+
+Stagnation density : 0.0366 kg/m³
+
+
+
+shell
+
+Copy code
+
+
+
+\### Boundary Layer (Integral Solver)
+
+
+
+State : Transitional
+
+Momentum thickness : 5.27e-05 m
+
+Energy thickness : 5.88e-05 m
+
+Skin friction coeff Cf : 0.001317
+
+Wall shear stress : 1468 Pa
+
+
+
+shell
+
+Copy code
+
+
+
+\### Monte-Carlo Certification Summary
+
+
+
+Total runs : 1000
+
+Survived : 238
+
+Thermal failures : 12
+
+Ablation failures : 750
+
+Survival rate : 23.8 %
+
+Worst T/Tmax : 1.296
+
+Worst remaining TPS : 0
+
+
+
+yaml
+
+Copy code
+
+
+
+---
+
+
+
+\## Directory Structure
+
+
+
 ORCUS/
+
+├── include/ # Public headers
+
+│ ├── orcus\_core.h
+
+│ ├── orcus\_heat.h
+
+│ ├── orcus\_flowfield.h
+
+│ ├── orcus\_boundary\_layer.h
+
+│ ├── orcus\_bl\_heating.h
+
+│ ├── orcus\_pns\_energy.h
+
+│ └── ...
+
 │
-├── include/
-│   ├── orcus_core.h          # Phase orchestration
-│   ├── orcus_physics.h       # Atmosphere & gas properties
-│   ├── orcus_heat.h          # Aerothermal models
-│   ├── orcus_tps.h           # TPS physics & failure
-│   ├── orcus_guidance.h      # Skip guidance logic
-│   ├── orcus_envelope.h      # Worst-case sweeps
-│   └── orcus_constants.h
+
+├── src/ # Implementation files
+
+│ ├── orcus\_core.cpp
+
+│ ├── orcus\_dynamics.cpp
+
+│ ├── orcus\_heat.cpp
+
+│ ├── orcus\_flowfield.cpp
+
+│ ├── orcus\_boundary\_layer.cpp
+
+│ ├── orcus\_bl\_heating.cpp
+
+│ ├── orcus\_pns\_energy.cpp
+
+│ └── ...
+
 │
-├── src/
-│   ├── core/
-│   ├── physics/
-│   ├── thermal/
-│   ├── dynamics/
-│   └── certification/
-│
-├── data/
-├── README.md
-└── CHANGELOG.md
 
-Versioning Policy
+├── data/ # Input profiles / reference datasets
 
-0.x → Physics closure & certification logic
+├── docs/ # Design notes and derivations
 
-1.0 → CFD / wind-tunnel anchored heating
+├── python/ # Post-processing \& analysis scripts
 
-2.0 → Guidance, control & optimization
+├── sim/ # Simulation outputs
 
-Build Instructions
-Windows (Visual Studio)
+└── main.cpp
 
-Open ORCUS.sln
 
-Build: x64 | Debug / Release
 
-Run executable
+yaml
 
-GCC / MinGW
-g++ -std=c++17 -O2 src/**/*.cpp -Iinclude -o orcus
-./orcus
+Copy code
 
-License
 
-MIT License — see LICENSE.md
 
-Author
+---
 
-Sohan Manna
-B.Tech (VIT)
-Hypersonic Flight • Aerothermodynamics • Failure-Aware Simulation
 
-ORCUS is built to fail honestly before it ever claims to survive.
+
+\## Validation Philosophy
+
+
+
+ORCUS is \*\*not tuned to match CFD by default\*\*.
+
+
+
+Instead:
+
+
+
+\- Each physics layer can be anchored independently  
+
+\- Differences vs CFD are diagnosable  
+
+\- Agreement (or disagreement) has physical meaning  
+
+
+
+This makes ORCUS suitable for:
+
+
+
+\- Early-phase design trade studies  
+
+\- TPS survivability screening  
+
+\- CFD pre-conditioning  
+
+\- Wind-tunnel test planning  
+
+
+
+---
+
+
+
+\## Roadmap
+
+
+
+\### Near-Term
+
+\- Phase-4C-5: Shock-layer finite thickness correction  
+
+\- Phase-4C-6: Equilibrium / frozen chemistry coupling  
+
+\- CSV export for CFD comparison  
+
+
+
+\### Mid-Term
+
+\- Phase-4D: Trajectory-coupled aerothermal feedback  
+
+\- Surface-resolved heat flux mapping  
+
+\- Multi-material TPS modeling  
+
+
+
+\### Long-Term
+
+\- Reduced-order surrogate generation from CFD  
+
+\- Flight data anchoring  
+
+\- Certification-oriented margin closure workflows  
+
+
+
+---
+
+
+
+\## License
+
+
+
+MIT License — see `LICENSE.md`
+
