@@ -1,25 +1,8 @@
 ﻿  main.cpp
-  orcus_aero.cpp
-  orcus_aerothermal.cpp
-  orcus_bank.cpp
-  orcus_bl_heating.cpp
-  orcus_boundary_layer.cpp
-  orcus_config.cpp
   orcus_core.cpp
-  orcus_dynamics.cpp
   orcus_envelope.cpp
-  orcus_flowfield.cpp
-  orcus_geom.cpp
-  orcus_guidance.cpp
-  orcus_heat.cpp
   orcus_montecarlo.cpp
-  orcus_physics.cpp
-  orcus_tps.cpp
+  orcus_pns_energy.cpp
   orcus_tps_min.cpp
-  orcus_tps_opt.cpp
-  orcus_traj_opt.cpp
-  Generating Code...
-  Compiling...
-  orcus_uncertainity.cpp
   Generating Code...
   ORCUS.vcxproj -> E:\ORCUS\x64\Debug\ORCUS.exe

@@ -5,6 +5,7 @@
 #include "../include/orcus_flowfield.h"      // Phase-4C-1
 #include "../include/orcus_boundary_layer.h" // Phase-4C-2
 #include "../include/orcus_bl_heating.h"     // Phase-4C-3
+#include "../include/orcus_pns_energy.h"     // Phase-4C-4 (NEW, ADDITIVE)
 #include "../include/orcus_tps.h"
 #include "../include/orcus_guidance.h"
 #include "../include/orcus_constants.h"
@@ -21,7 +22,7 @@
 namespace ORCUS {
 
     // ===============================
-    // Phase banner utility
+    // Phase banner utility (UNCHANGED)
     // ===============================
     void print_stage_banner(OrcusStage stage) {
         std::cout << "\n====================================\n";
@@ -54,18 +55,24 @@ namespace ORCUS {
         case OrcusStage::PHASE_4C_1:
             std::cout << "ORCUS Phase-4C-1 — Shock Stand-off & Stagnation Field\n";
             break;
+
         case OrcusStage::PHASE_4C_2:
             std::cout << "ORCUS Phase-4C-2 — Boundary-Layer Integral Equations\n";
-			break;
+            break;
+
         case OrcusStage::PHASE_4C_3:
             std::cout << "ORCUS Phase-4C-3 — Wall Heat Flux from BL Theory\n";
-			break;
+            break;
+
+        case OrcusStage::PHASE_4C_4:
+            std::cout << "ORCUS Phase-4C-4 — Parabolized Navier–Stokes Energy Equation\n";
+            break;
         }
         std::cout << "====================================\n";
     }
 
     // ==================================================
-    // Core thermal evaluation (unchanged)
+    // Core thermal evaluation (UNCHANGED — VERBATIM)
     // ==================================================
     ThermalSummary run_thermal_summary(
         const OrcusConfig& cfg,
@@ -140,7 +147,9 @@ namespace ORCUS {
         return out;
     }
 
-    // Master simulation entry point
+    // ==================================================
+    // Master simulation entry point (ADD ONLY BELOW)
+    // ==================================================
     void run_default_simulation() {
 
         std::cout << "ORCUS Phase-3 Engine Running\n";
@@ -182,12 +191,16 @@ namespace ORCUS {
         print_stage_banner(OrcusStage::PHASE_3W);
         run_montecarlo_certification();
 
-        // Phase-4C-1: Shock stand-off & stagnation field
-        print_stage_banner(OrcusStage::PHASE_4C_1);
+        // ==================================================
+        // Phase-4C (POST-PROCESSING — ADDITIVE)
+        // ==================================================
 
         double z_ref = 40000.0;
         double V_ref = cfg.initial_speed_mps;
         double Mach_ref = V_ref / speed_of_sound(z_ref);
+
+        // -------- Phase-4C-1 --------
+        print_stage_banner(OrcusStage::PHASE_4C_1);
 
         StagnationField stag =
             compute_stagnation_field(
@@ -199,16 +212,14 @@ namespace ORCUS {
             );
 
         std::cout << "--- Stagnation Flow Field ---\n";
-        std::cout << "Shock stand-off distance : "
-            << stag.shock_standoff << " m\n";
-        std::cout << "Stagnation pressure     : "
-            << stag.p_stag << " Pa\n";
-        std::cout << "Stagnation temperature  : "
-            << stag.T_stag << " K\n";
-        std::cout << "Stagnation density      : "
-            << stag.rho_stag << " kg/m^3\n";
+        std::cout << "Shock stand-off distance : " << stag.shock_standoff << " m\n";
+        std::cout << "Stagnation pressure     : " << stag.p_stag << " Pa\n";
+        std::cout << "Stagnation temperature  : " << stag.T_stag << " K\n";
+        std::cout << "Stagnation density      : " << stag.rho_stag << " kg/m^3\n";
 
-        // Phase-4C-2: Boundary-layer integral equations
+        // -------- Phase-4C-2 --------
+        print_stage_banner(OrcusStage::PHASE_4C_2);
+
         constexpr double mu_air = 1.8e-5;
         constexpr double x_ref = 0.1;
 
@@ -223,18 +234,15 @@ namespace ORCUS {
 
         std::cout << "--- Boundary Layer (Integral Solver) ---\n";
         std::cout << "State                  : "
-            << (bl.state == BoundaryLayerState::LAMINAR ?
-                "Laminar" : "Transitional") << "\n";
-        std::cout << "Momentum thickness     : "
-            << bl.theta << " m\n";
-        std::cout << "Energy thickness       : "
-            << bl.delta_e << " m\n";
-        std::cout << "Skin friction coeff Cf : "
-            << bl.Cf << "\n";
-        std::cout << "Wall shear stress      : "
-            << bl.tau_w << " Pa\n";
+            << (bl.state == BoundaryLayerState::LAMINAR ? "Laminar" : "Transitional") << "\n";
+        std::cout << "Momentum thickness     : " << bl.theta << " m\n";
+        std::cout << "Energy thickness       : " << bl.delta_e << " m\n";
+        std::cout << "Skin friction coeff Cf : " << bl.Cf << "\n";
+        std::cout << "Wall shear stress      : " << bl.tau_w << " Pa\n";
 
-        // Phase-4C-3: Wall heat flux from BL theory
+        // -------- Phase-4C-3 --------
+        print_stage_banner(OrcusStage::PHASE_4C_3);
+
         constexpr double CP_AIR = 1005.0;
 
         BLHeatFlux q_bl =
@@ -248,10 +256,25 @@ namespace ORCUS {
             );
 
         std::cout << "--- Wall Heat Flux (BL Theory) ---\n";
-        std::cout << "Stanton number         : "
-            << q_bl.Stanton << "\n";
-        std::cout << "Wall heat flux q_w     : "
-            << q_bl.q_wall << " W/m^2\n";
+        std::cout << "Stanton number         : " << q_bl.Stanton << "\n";
+        std::cout << "Wall heat flux q_w     : " << q_bl.q_wall << " W/m^2\n";
+
+        // -------- Phase-4C-4 --------
+        print_stage_banner(OrcusStage::PHASE_4C_4);
+
+        PNSEnergyResult pns =
+            solve_pns_energy(
+                stag.T_stag,
+                300.0,
+                bl.delta_e,
+                0.026   // air thermal conductivity (W/m-K)
+            );
+
+        std::cout << "--- PNS Energy Equation ---\n";
+        std::cout << "Wall temperature gradient dT/dy : "
+            << pns.dTdy_wall << " K/m\n";
+        std::cout << "Diffusive wall heat flux q_NS   : "
+            << pns.q_wall << " W/m^2\n";
     }
 
 } // namespace ORCUS

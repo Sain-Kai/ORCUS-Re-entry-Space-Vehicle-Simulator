@@ -14,6 +14,7 @@ E:\ORCUS\src\orcus_guidance.cpp;E:\ORCUS\ORCUS\x64\Debug\orcus_guidance.obj
 E:\ORCUS\src\orcus_heat.cpp;E:\ORCUS\ORCUS\x64\Debug\orcus_heat.obj
 E:\ORCUS\src\orcus_montecarlo.cpp;E:\ORCUS\ORCUS\x64\Debug\orcus_montecarlo.obj
 E:\ORCUS\src\orcus_physics.cpp;E:\ORCUS\ORCUS\x64\Debug\orcus_physics.obj
+E:\ORCUS\src\orcus_pns_energy.cpp;E:\ORCUS\ORCUS\x64\Debug\orcus_pns_energy.obj
 E:\ORCUS\src\orcus_tps.cpp;E:\ORCUS\ORCUS\x64\Debug\orcus_tps.obj
 E:\ORCUS\src\orcus_tps_min.cpp;E:\ORCUS\ORCUS\x64\Debug\orcus_tps_min.obj
 E:\ORCUS\src\orcus_tps_opt.cpp;E:\ORCUS\ORCUS\x64\Debug\orcus_tps_opt.obj
