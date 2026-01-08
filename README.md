@@ -125,9 +125,6 @@ Stagnation pressure : 320564 Pa
 Stagnation temperature : 30495.1 K
 Stagnation density : 0.0366272 kg/m^3
 
-yaml
-Copy code
-
 ---
 
 ### 🟦 Phase-4C-2 — Boundary Layer (Integral Solver)
@@ -144,8 +141,6 @@ Energy thickness : 5.88046e-05 m
 Skin friction coeff Cf : 0.00131764
 Wall shear stress : 1468.11 Pa
 
-yaml
-Copy code
 
 ---
 
@@ -163,8 +158,6 @@ Copy code
 Stanton number : 0.00141
 Wall heat flux q_w : 1.12e+07 W/m^2
 
-yaml
-Copy code
 
 ---
 
@@ -178,9 +171,6 @@ Ablation failures : 750
 Survival rate : 23.8 %
 Worst T/Tmax : 1.29602
 Worst remaining TPS : 0
-
-yaml
-Copy code
 
 ---
 
@@ -209,9 +199,6 @@ ORCUS/
 ├── data/ # Test cases / reference data
 ├── python/ # Post-processing & plotting (planned)
 └── README.md
-
-yaml
-Copy code
 
 ---
 
