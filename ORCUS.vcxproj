@@ -34,6 +34,7 @@
     <ClCompile Include="src\orcus_geom.cpp" />
     <ClCompile Include="src\orcus_guidance.cpp" />
     <ClCompile Include="src\orcus_heat.cpp" />
+    <ClCompile Include="src\orcus_inviscid.cpp" />
     <ClCompile Include="src\orcus_montecarlo.cpp" />
     <ClCompile Include="src\orcus_noneq_chemistry.cpp" />
     <ClCompile Include="src\orcus_physics.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="include\orcus_geom.h" />
     <ClInclude Include="include\orcus_guidance.h" />
     <ClInclude Include="include\orcus_heat.h" />
+    <ClInclude Include="include\orcus_inviscid.h" />
     <ClInclude Include="include\orcus_montecarlo.h" />
     <ClInclude Include="include\orcus_noneq_chemistry.h" />
     <ClInclude Include="include\orcus_physics.h" />

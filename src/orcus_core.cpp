@@ -19,6 +19,7 @@
 #include "../include/orcus_noneq_chemistry.h"
 #include "../include/orcus_surface_chemistry.h"
 #include "../include/orcus_radiation.h"
+#include "../include/orcus_inviscid.h"
 
 #include <iostream>
 #include <cmath>
@@ -93,6 +94,8 @@ namespace ORCUS {
             std::cout << "ORCUS Phase-4G — Radiation Gas Coupling\n";
 			break;
 
+        case OrcusStage::PHASE_5A:
+			std::cout << "ORCUS Phase-5A — Inviscid Outer Flow Forebody Analysis\n";
         }
         std::cout << "====================================\n";
     }
@@ -413,6 +416,34 @@ namespace ORCUS {
             << rad.net_radiative_heat << " W/m^2\n";
         std::cout << "TOTAL wall heat flux      : "
             << q_total << " W/m^2\n";
+
+        // Phase-5A — Inviscid Outer Flow (Euler surrogate)
+        print_stage_banner(OrcusStage::PHASE_5A);
+        constexpr int N_INVISCID = 20;
+
+        InviscidSolution inv =
+            compute_inviscid_flow(
+                Mach_ref,
+                1.4,
+                V_ref,
+                pressure(z_ref),
+                cfg.nose_radius_m,
+                N_INVISCID
+            );
+
+        std::cout << "--- Inviscid Surface Flow ---\n";
+        std::cout << "x (m)\tCp\t\tUe (m/s)\tPe (Pa)\n";
+
+        for (int i = 0; i < inv.N; ++i) {
+            std::cout
+                << inv.pts[i].x << "\t"
+                << inv.pts[i].Cp << "\t"
+                << inv.pts[i].Ue << "\t"
+                << inv.pts[i].Pe << "\n";
+        }
+
+        // NOTE: memory cleanup (explicit, deterministic)
+        delete[] inv.pts;
 
     }
 } // namespace ORCUS
