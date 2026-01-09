@@ -15,6 +15,8 @@
 #include "../include/orcus_tps_min.h"
 #include "../include/orcus_montecarlo.h"
 #include "../include/orcus_shock_layer.h"
+#include "../include/orcus_real_gas.h"
+
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -70,6 +72,11 @@ namespace ORCUS {
 
         case OrcusStage::PHASE_4C_5:
 			std::cout << "ORCUS Phase-4C-5 — Shock-Layer Finite Thickness Correction\n";
+        
+        case OrcusStage::PHASE_4D:
+            std::cout << "ORCUS Phase-4D — Real-Gas Thermodynamic Correction\n";
+			break;
+
         }
         std::cout << "====================================\n";
     }
@@ -289,6 +296,23 @@ namespace ORCUS {
             << sl.efficiency << "\n";
         std::cout << "Corrected wall heat flux  : "
             << q_corrected << " W/m^2\n";
+
+        // -------- Phase-4D: Real-gas thermodynamic correction --------
+        print_stage_banner(OrcusStage::PHASE_4D);
+
+        RealGasProps rg =
+            compute_real_gas_props(stag.T_stag);
+
+        double q_real_gas =
+            q_corrected * (rg.Cp / 1005.0) * (1.4 / rg.gamma);
+
+        std::cout << "--- Real Gas Correction ---\n";
+        std::cout << "Effective gamma          : "
+            << rg.gamma << "\n";
+        std::cout << "Effective Cp             : "
+            << rg.Cp << " J/kg-K\n";
+        std::cout << "Real-gas corrected heat  : "
+            << q_real_gas << " W/m^2\n";
 
 
     }

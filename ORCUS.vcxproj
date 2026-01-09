@@ -37,6 +37,7 @@
     <ClCompile Include="src\orcus_montecarlo.cpp" />
     <ClCompile Include="src\orcus_physics.cpp" />
     <ClCompile Include="src\orcus_pns_energy.cpp" />
+    <ClCompile Include="src\orcus_real_gas.cpp" />
     <ClCompile Include="src\orcus_shock_layer.cpp" />
     <ClCompile Include="src\orcus_tps.cpp" />
     <ClCompile Include="src\orcus_tps_min.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="include\orcus_montecarlo.h" />
     <ClInclude Include="include\orcus_physics.h" />
     <ClInclude Include="include\orcus_pns_energy.h" />
+    <ClInclude Include="include\orcus_real_gas.h" />
     <ClInclude Include="include\orcus_tps.h" />
     <ClInclude Include="include\orcus_tps_min.h" />
     <ClInclude Include="include\orcus_tps_opt.h" />

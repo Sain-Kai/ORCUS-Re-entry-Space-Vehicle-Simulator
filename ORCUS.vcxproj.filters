@@ -87,6 +87,9 @@
     <ClCompile Include="src\orcus_shock_layer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\orcus_real_gas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\orcus_core.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\orcus_pns_energy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\orcus_real_gas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
