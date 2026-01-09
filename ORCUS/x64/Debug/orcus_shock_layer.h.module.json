@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "ORCUS\\x64\\Debug\\orcus_shock_layer.h.obj",
+            "outputs": [
+                "E:\\ORCUS\\ORCUS\\x64\\Debug\\vc145.pdb",
+                "ORCUS\\x64\\Debug\\",
+                "E:\\ORCUS\\ORCUS\\x64\\Debug\\orcus_shock_layer.h.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "include\\orcus_shock_layer.h",
+                    "source-path": "e:\\orcus\\include\\orcus_shock_layer.h",
+                    "lookup-method": "absolute"
+                }
+            ],
+            "requires": []
+        }
+    ]
+}

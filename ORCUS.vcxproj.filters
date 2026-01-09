@@ -81,6 +81,12 @@
     <ClCompile Include="src\orcus_pns_energy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\orcus_shock_layer.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\orcus_shock_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\orcus_core.h">

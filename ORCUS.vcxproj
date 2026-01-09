@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\orcus_shock_layer.h" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\orcus_aero.cpp" />
     <ClCompile Include="src\orcus_aerothermal.cpp" />
@@ -36,6 +37,7 @@
     <ClCompile Include="src\orcus_montecarlo.cpp" />
     <ClCompile Include="src\orcus_physics.cpp" />
     <ClCompile Include="src\orcus_pns_energy.cpp" />
+    <ClCompile Include="src\orcus_shock_layer.cpp" />
     <ClCompile Include="src\orcus_tps.cpp" />
     <ClCompile Include="src\orcus_tps_min.cpp" />
     <ClCompile Include="src\orcus_tps_opt.cpp" />

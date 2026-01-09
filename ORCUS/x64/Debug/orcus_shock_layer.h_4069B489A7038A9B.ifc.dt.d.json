@@ -1,0 +1,10 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\orcus\\include\\orcus_shock_layer.h",
+        "ProvidedModule": "",
+        "Includes": [],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

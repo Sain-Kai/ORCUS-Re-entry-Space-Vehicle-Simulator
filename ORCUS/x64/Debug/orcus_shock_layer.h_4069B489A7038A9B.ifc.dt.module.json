@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "ORCUS\\x64\\Debug\\orcus_shock_layer.obj",
+            "outputs": [
+                "ORCUS\\x64\\Debug\\orcus_shock_layer.h_4069B489A7038A9B.ifc.dt.module.json",
+                "ORCUS\\x64\\Debug\\orcus_shock_layer.h_4069B489A7038A9B.ifc.dt.d.json",
+                "ORCUS\\x64\\Debug\\orcus_shock_layer.h.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "E:\\ORCUS\\include\\orcus_shock_layer.h",
+                    "source-path": "e:\\orcus\\include\\orcus_shock_layer.h",
+                    "lookup-method": "absolute"
+                }
+            ],
+            "requires": []
+        }
+    ]
+}

@@ -14,7 +14,7 @@
 #include "../include/orcus_uncertainity.h"
 #include "../include/orcus_tps_min.h"
 #include "../include/orcus_montecarlo.h"
-
+#include "../include/orcus_shock_layer.h"
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -67,13 +67,13 @@ namespace ORCUS {
         case OrcusStage::PHASE_4C_4:
             std::cout << "ORCUS Phase-4C-4 — Parabolized Navier–Stokes Energy Equation\n";
             break;
+
+        case OrcusStage::PHASE_4C_5:
+			std::cout << "ORCUS Phase-4C-5 — Shock-Layer Finite Thickness Correction\n";
         }
         std::cout << "====================================\n";
     }
 
-    // ==================================================
-    // Core thermal evaluation (UNCHANGED — VERBATIM)
-    // ==================================================
     ThermalSummary run_thermal_summary(
         const OrcusConfig& cfg,
         double bank_rad
@@ -147,9 +147,6 @@ namespace ORCUS {
         return out;
     }
 
-    // ==================================================
-    // Master simulation entry point (ADD ONLY BELOW)
-    // ==================================================
     void run_default_simulation() {
 
         std::cout << "ORCUS Phase-3 Engine Running\n";
@@ -190,10 +187,6 @@ namespace ORCUS {
         // -------- Phase-3W --------
         print_stage_banner(OrcusStage::PHASE_3W);
         run_montecarlo_certification();
-
-        // ==================================================
-        // Phase-4C (POST-PROCESSING — ADDITIVE)
-        // ==================================================
 
         double z_ref = 40000.0;
         double V_ref = cfg.initial_speed_mps;
@@ -275,6 +268,28 @@ namespace ORCUS {
             << pns.dTdy_wall << " K/m\n";
         std::cout << "Diffusive wall heat flux q_NS   : "
             << pns.q_wall << " W/m^2\n";
-    }
 
+        // -------- Phase-4C-5: Shock-layer finite thickness correction --------
+        print_stage_banner(OrcusStage::PHASE_4C_5);
+
+        ShockLayerProps sl =
+            compute_shock_layer(
+                Mach_ref,
+                1.4,
+                cfg.nose_radius_m
+            );
+
+        double q_corrected =
+            sl.efficiency * q_bl.q_wall;
+
+        std::cout << "--- Shock Layer Finite Thickness Correction ---\n";
+        std::cout << "Shock-layer thickness     : "
+            << sl.thickness << " m\n";
+        std::cout << "Efficiency factor         : "
+            << sl.efficiency << "\n";
+        std::cout << "Corrected wall heat flux  : "
+            << q_corrected << " W/m^2\n";
+
+
+    }
 } // namespace ORCUS
