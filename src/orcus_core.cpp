@@ -24,6 +24,7 @@
 #include "../include/orcus_viscous_inviscid.h"
 #include "../include/orcus_surface_distribution.h"
 #include "../include/orcus_tps_distribution.h"
+#include "../include/orcus_structure_thermal.h"
 
 #include <iostream>
 #include <cmath>
@@ -116,7 +117,11 @@ namespace ORCUS {
 
         case OrcusStage::PHASE_5E:
             std::cout << "ORCUS Phase-5E — TPS Tile-by-Tile Recession Mapping\n";
+            break;
 
+        case OrcusStage::PHASE_5F:
+            std::cout << "ORCUS Phase-5F — Internal Structure-Thermal Stress\n";
+			break;
         }
         std::cout << "====================================\n";
     }
@@ -583,6 +588,38 @@ namespace ORCUS {
             std::cout << "x=" << t.x
                 << " m | h_remain=" << t.thickness_remain
                 << " m | failed=" << t.failed << "\n";
+        }
+
+        // =========================================================
+// Phase-5F — Internal Structure Thermal Stress
+// =========================================================
+        print_stage_banner(OrcusStage::PHASE_5F);
+
+        StructureThermalProps st =
+            compute_structure_thermal(
+                q_noneq,        // final corrected heat flux
+                1.0,            // timestep (s)
+                15.0,           // interface conductivity (W/m-K)
+                0.02,           // structure thickness (m)
+                2700.0,         // Al alloy density (kg/m^3)
+                900.0,          // cp (J/kg-K)
+                70e9,           // Young's modulus (Pa)
+                23e-6,          // thermal expansion (1/K)
+                300.0,          // reference temp (K)
+                250e6           // allowable stress (Pa)
+            );
+
+        std::cout << "--- Structure Thermal Response ---\n";
+        std::cout << "Structure temperature  : "
+            << st.T_structure << " K\n";
+        std::cout << "Thermal stress         : "
+            << st.thermal_stress / 1e6 << " MPa\n";
+
+        if (st.failed) {
+            std::cout << "STRUCTURAL FAILURE: Thermal stress exceeded\n";
+        }
+        else {
+            std::cout << "Structure within allowable limits\n";
         }
 
 
