@@ -26,7 +26,7 @@
 #include "../include/orcus_tps_distribution.h"
 #include "../include/orcus_structure_thermal.h"
 #include "../include/orcus_export.h"
-
+#include "../include/orcus_coupled_loop.h"
 
 #include <iostream>
 #include <cmath>
@@ -127,6 +127,11 @@ namespace ORCUS {
 
         case OrcusStage::PHASE_5G:
 			std::cout << "ORCUS Phase-5G — Data Export & CFD Coupling Interface\n";
+            break;
+
+        case OrcusStage::PHASE_6A:
+            std::cout << "ORCUS Phase-6A — Coupled Aero-Thermo-Structural Loop\n";
+			break;
         }
         std::cout << "====================================\n";
     }
@@ -643,11 +648,117 @@ namespace ORCUS {
         }
 
         export_surface_csv(
-            "orcus_surface_results.csv",
+            "E:/ORCUS/data/orcus_surface_results.csv",
             export_data
         );
 
         std::cout << "Exported: orcus_surface_results.csv\n";
+
+        // -------- Phase-6A: Fully Coupled Trajectory–Heating–TPS Loop --------
+        print_stage_banner(OrcusStage::PHASE_6A);
+
+        // --- Reconstruct vehicle (ADD ONLY, DO NOT REMOVE EARLIER VEH) ---
+        Vehicle6DOF veh_cpl{};
+        veh_cpl.mass = 1500.0;
+        veh_cpl.Sref = 1.8;
+        veh_cpl.cref = 2.0;
+        veh_cpl.bank = 0.0;
+        veh_cpl.Ixx = 800;
+        veh_cpl.Iyy = 1200;
+        veh_cpl.Izz = 1000;
+
+        // --- Reconstruct TPS material ---
+        TPSMaterial tps{};
+        tps.k = 1600.0;
+        tps.density = 1250.0;
+        tps.cp = 0.15;
+        tps.emissivity = 0.9;
+        tps.Tmax = 2200.0;
+        tps.L_abl = 2.5e6;
+
+        // --- Coupled TPS state ---
+        TPSState tps_cpl{};
+        tps_cpl.T_surface = 300.0;
+        tps_cpl.T_bulk = 300.0;
+        tps_cpl.thickness = cfg.tps_thickness_m;
+        tps_cpl.failed = false;
+
+        // --- Coupled vehicle state ---
+        State6DOF s_cpl{};
+        s_cpl.x = 0.0;
+        s_cpl.y = 0.0;
+        s_cpl.z = cfg.initial_altitude_m;
+        s_cpl.vx = cfg.initial_speed_mps;
+        s_cpl.vy = 0.0;
+        s_cpl.vz = cfg.initial_vz_mps;
+        s_cpl.q0 = 1.0;
+        s_cpl.q1 = s_cpl.q2 = s_cpl.q3 = 0.0;
+        s_cpl.p = s_cpl.q = s_cpl.r = 0.0;
+
+        // --- Time loop ---
+        double t = 0.0;
+        double dt = 0.05;
+
+        std::cout << "--- Fully Coupled Re-entry Simulation ---\n";
+
+        while (s_cpl.z > 0.0 && !tps_cpl.failed && t < 2000.0) {
+
+            double V = std::sqrt(
+                s_cpl.vx * s_cpl.vx +
+                s_cpl.vy * s_cpl.vy +
+                s_cpl.vz * s_cpl.vz
+            );
+
+            double Mach = V / speed_of_sound(s_cpl.z);
+            double gamma = std::atan2(-s_cpl.vz, s_cpl.vx);
+            double rho = density(s_cpl.z);
+            double Rex = rho * V * veh_cpl.cref / 1.8e-5;
+
+            // --- Heating ---
+            HeatFlux H = compute_heating(
+                rho,
+                V,
+                cfg.nose_radius_m,
+                gamma,
+                Mach,
+                Rex,
+                tps_cpl.T_surface,
+                tps.emissivity
+            );
+
+            // --- TPS update ---
+            tps_cpl = update_tps_ablation(
+                tps_cpl,
+                tps,
+                H.q_net,
+                dt
+            );
+
+            // --- Guidance ---
+            GuidanceCmd gcmd =
+                skip_guidance(
+                    s_cpl.z,
+                    Mach,
+                    H.q_net,
+                    gamma,
+                    cfg
+                );
+
+            s_cpl.vz += V * gcmd.gamma_dot_cmd * dt;
+
+            // --- Dynamics ---
+            s_cpl = rk4_step_6dof(s_cpl, dt, veh_cpl);
+
+            t += dt;
+        }
+
+        // --- Results ---
+        std::cout << "--- Phase-6A Results ---\n";
+        std::cout << "Final altitude           : " << s_cpl.z << " m\n";
+        std::cout << "Remaining TPS thickness  : " << tps_cpl.thickness << " m\n";
+        std::cout << "Peak failure mode        : "
+            << to_string(tps_cpl.failure_mode) << "\n";
+
 
     }
 } // namespace ORCUS

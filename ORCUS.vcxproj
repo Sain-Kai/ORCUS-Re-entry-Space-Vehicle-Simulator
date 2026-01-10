@@ -28,6 +28,7 @@
     <ClCompile Include="src\orcus_boundary_layer.cpp" />
     <ClCompile Include="src\orcus_config.cpp" />
     <ClCompile Include="src\orcus_core.cpp" />
+    <ClCompile Include="src\orcus_coupled_loop.cpp" />
     <ClCompile Include="src\orcus_displacement_bl.cpp" />
     <ClCompile Include="src\orcus_dynamics.cpp" />
     <ClCompile Include="src\orcus_envelope.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="include\orcus_config.h" />
     <ClInclude Include="include\orcus_constants.h" />
     <ClInclude Include="include\orcus_core.h" />
+    <ClInclude Include="include\orcus_coupled_loop.h" />
     <ClInclude Include="include\orcus_displacement_bl.h" />
     <ClInclude Include="include\orcus_dynamics.h" />
     <ClInclude Include="include\orcus_envelope.h" />
