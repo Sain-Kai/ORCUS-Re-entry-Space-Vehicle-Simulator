@@ -22,7 +22,8 @@ namespace ORCUS {
         PHASE_4G,
         PHASE_5A,
         PHASE_5B,
-        PHASE_5C
+        PHASE_5C,
+        PHASE_5D
     };
 
     struct ThermalSummary {

@@ -22,7 +22,7 @@
 #include "../include/orcus_inviscid.h"
 #include "../include/orcus_displacement_bl.h"   // Phase-5B
 #include "../include/orcus_viscous_inviscid.h"
-
+#include "../include/orcus_surface_distribution.h"
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -106,6 +106,11 @@ namespace ORCUS {
 
         case OrcusStage::PHASE_5C:
             std::cout << "ORCUS Phase-5C - Viscous-Inviscid Coupling\n";
+            break;
+
+        case OrcusStage::PHASE_5D:
+            std::cout << "ORCUS Phase-5D — Surface Cp(x) & Heat-Flux Distribution\n";
+
         }
         std::cout << "====================================\n";
     }
@@ -501,6 +506,41 @@ namespace ORCUS {
             << vi.iterations << "\n";
         std::cout << "Final residual           : "
             << vi.convergence_error << "\n";
+
+        // =========================================================
+// Phase-5D — Surface-Resolved Pressure & Heating
+// =========================================================
+        print_stage_banner(OrcusStage::PHASE_5D);
+
+        constexpr double BODY_LENGTH = 4.0;   // meters
+        constexpr int N_STATIONS = 50;
+
+        SurfaceDistribution surf =
+            compute_surface_distribution(
+                vi.Cp_correction,
+                q_noneq,                  // final corrected stagnation heat
+                vi.effective_radius,
+                BODY_LENGTH,
+                N_STATIONS
+            );
+
+        std::cout << "--- Surface Distribution ---\n";
+        std::cout << "Body length              : "
+            << BODY_LENGTH << " m\n";
+        std::cout << "Number of stations       : "
+            << N_STATIONS << "\n";
+        std::cout << "Peak heat flux           : "
+            << surf.peak_q << " W/m^2\n";
+        std::cout << "Peak location x          : "
+            << surf.peak_x << " m\n";
+
+        std::cout << "\nSample stations:\n";
+        for (size_t i = 0; i < surf.points.size(); i += 10) {
+            std::cout << "x=" << surf.points[i].x
+                << " m | Cp=" << surf.points[i].Cp
+                << " | q=" << surf.points[i].q
+                << " W/m^2\n";
+        }
 
     }
 } // namespace ORCUS

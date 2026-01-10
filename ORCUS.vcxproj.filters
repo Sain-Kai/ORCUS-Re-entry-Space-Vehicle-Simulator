@@ -108,6 +108,9 @@
     <ClCompile Include="src\orcus_viscous_inviscid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\orcus_surface_distribution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\orcus_core.h">
@@ -195,6 +198,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\orcus_viscous_inviscid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\orcus_surface_distribution.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

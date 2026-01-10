@@ -1,11 +1,11 @@
 ﻿  Scanning sources for module dependencies...
   main.cpp
   orcus_core.cpp
-E:\ORCUS\src\orcus_core.cpp(473,22): warning C4566: character represented by universal-character-name '\u03B8' cannot be represented in the current code page (1252)
-E:\ORCUS\src\orcus_core.cpp(477,22): warning C4566: character represented by universal-character-name '\u03B4' cannot be represented in the current code page (1252)
+E:\ORCUS\src\orcus_core.cpp(478,22): warning C4566: character represented by universal-character-name '\u03B8' cannot be represented in the current code page (1252)
+E:\ORCUS\src\orcus_core.cpp(482,22): warning C4566: character represented by universal-character-name '\u03B4' cannot be represented in the current code page (1252)
   orcus_envelope.cpp
   orcus_montecarlo.cpp
+  orcus_surface_distribution.cpp
   orcus_tps_min.cpp
-  orcus_viscous_inviscid.cpp
   Generating Code...
   ORCUS.vcxproj -> E:\ORCUS\x64\Debug\ORCUS.exe
